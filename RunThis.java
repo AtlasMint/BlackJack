@@ -465,7 +465,7 @@ public class RunThis {
 			else if (cards.length == 2 && cards[1].endsWith("A") && cards[0].endsWith("King")) {
 				value = "BJ";
 			}
-			
+			/*
 			else if (cards.length == 2){
 				for (int i = 0; i < cards.length; i++) {
 					if (cards[i].endsWith("A")) {
@@ -500,12 +500,8 @@ public class RunThis {
 					}
 				}
 			}
-
-			else if (cards.length == 5 && Integer.valueOf(value) <= 21) {
-				value = "5D";
-			}
-			
-			else if (cards.length > 2 && cards.length <= 5){
+			*/
+			else if (cards.length >= 2 && cards.length <= 5){
 				for (int i = 0; i < cards.length; i++) {
 					if (cards[i].endsWith("A")) {
 						value = Integer.toString(Integer.valueOf(value) + 1);
@@ -537,17 +533,15 @@ public class RunThis {
 					else if (cards[i].endsWith("10") || cards[i].endsWith("Jack") || cards[i].endsWith("Queen") || cards[i].endsWith("King")) {
 						value = Integer.toString(Integer.valueOf(value) + 10);
 					}
-				}
+				} //for
 				
-				if (Integer.valueOf(value) > 21) {
+				if (cards.length == 5 && Integer.valueOf(value) <= 21) {
+					value = "5D";
+				}
+				else if (Integer.valueOf(value) > 21) {
 					value = "bust";
 				}
 			}
-
-			else {
-				value = "bust";
-			}
-			
 			return value;
 		}
 		
@@ -707,48 +701,50 @@ public class RunThis {
 		} //runBlackJack();
 		
 		public void dealerMove() {
-			if (!standP && Integer.valueOf(outcomeD) < 16 && dealerHands.length <=5) {
-				tempx = new String[dealerHands.length];
-				for (int i = 0; i < tempx.length; i++) {
-					tempx[i] = dealerHands[i];
+			if (!outcomeD.equals("bust") || !outcomeD.equals("double A") || !outcomeD.equals("BJ") || !outcomeD.equals("5D")) {
+				if (!standP && Integer.valueOf(outcomeD) < 16 && dealerHands.length <=5) {
+					tempx = new String[dealerHands.length];
+					for (int i = 0; i < tempx.length; i++) {
+						tempx[i] = dealerHands[i];
+					}
+					dealerHands = new String[tempx.length+1];
+					dealerHands = addHand(tempx, deck[remainingCards-1]);
+					remainingCards--;
+					deck = minusDeck(deck);
+					outcomeD = value(dealerHands);
+					
+					if (dealerHands.length == 3) {
+						d3.setIcon(cardIcons.getCardBack());
+					}
+					else if (dealerHands.length == 4) {
+						d4.setIcon(cardIcons.getCardBack());
+					}
+					else if (dealerHands.length == 5) {
+						d5.setIcon(cardIcons.getCardBack());
+					}
 				}
-				dealerHands = new String[tempx.length+1];
-				dealerHands = addHand(tempx, deck[remainingCards-1]);
-				remainingCards--;
-				deck = minusDeck(deck);
-				outcomeD = value(dealerHands);
 				
-				if (dealerHands.length == 3) {
-					d3.setIcon(cardIcons.getCardBack());
-				}
-				else if (dealerHands.length == 4) {
-					d4.setIcon(cardIcons.getCardBack());
-				}
-				else if (dealerHands.length == 5) {
-					d5.setIcon(cardIcons.getCardBack());
-				}
-			}
-			
-			else {
-				while (dealerHands.length <= 5) {
-					//System.out.println(outcomeD);
-					if (outcomeD.equals("5D") || outcomeD.equals("bust") ||
-							Integer.valueOf(outcomeD) >= 16) {
-						break;
-					}
-					else {
-						tempx = new String[dealerHands.length];
-						for (int i = 0; i < tempx.length; i++) {
-							tempx[i] = dealerHands[i];
+				else {
+					while (dealerHands.length <= 5) {
+						//System.out.println(outcomeD);
+						if (outcomeD.equals("5D") || outcomeD.equals("bust") ||
+								Integer.valueOf(outcomeD) >= 16) {
+							break;
 						}
-						dealerHands = new String[tempx.length+1];
-						dealerHands = addHand(tempx, deck[remainingCards-1]);
-						remainingCards--;
-						deck = minusDeck(deck);
-						outcomeD = value(dealerHands);
+						else {
+							tempx = new String[dealerHands.length];
+							for (int i = 0; i < tempx.length; i++) {
+								tempx[i] = dealerHands[i];
+							}
+							dealerHands = new String[tempx.length+1];
+							dealerHands = addHand(tempx, deck[remainingCards-1]);
+							remainingCards--;
+							deck = minusDeck(deck);
+							outcomeD = value(dealerHands);
+						}
 					}
-				}
-				//setCardBackD(); I think here no need
+					//setCardBackD(); I think here no need
+				} //if-else
 			}
 		} //dealerMove() //will be a long one
 		
@@ -927,7 +923,7 @@ public class RunThis {
 		}
 		
 		public void printAllOutcomes() {
-			System.out.printf("%s %s", outcomeD, outcomeP);
+			System.out.printf("OutcomeD: %s\nOutcomeP: %s", outcomeD, outcomeP);
 		}
 		
 		public boolean isGameOver() {
