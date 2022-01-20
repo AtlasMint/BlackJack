@@ -31,9 +31,19 @@ public class LogInTask {
 	private int totalRecords;
 	private int playerNowIndex;
 	private Formatter frmtr;
+	private String loca = "";
+	/*please enter the custom directory to loca if needed,
+	 * be reminded as well that all backslashes ("\\") must be replaced with a slash ("/") and
+	 * a slash  must be added as the last character
+	*/
 	
 	public LogInTask(String direction) {
-		this.direction = direction;
+		if (loca.equals("")) {
+			this.direction = direction;
+		}
+		else {
+			this.direction = loca + direction;
+		}
 	}
 	
 	public void setPlayerNowIndex (int index) {
