@@ -701,7 +701,7 @@ public class RunThis {
 		} //runBlackJack();
 		
 		public void dealerMove() {
-			if (!outcomeD.equals("bust") || !outcomeD.equals("double A") || !outcomeD.equals("BJ") || !outcomeD.equals("5D")) {
+			if (!outcomeD.equals("bust") && !outcomeD.equals("double A") && !outcomeD.equals("BJ") && !outcomeD.equals("5D")) {
 				if (!standP && Integer.valueOf(outcomeD) < 16 && dealerHands.length <=5) {
 					tempx = new String[dealerHands.length];
 					for (int i = 0; i < tempx.length; i++) {
