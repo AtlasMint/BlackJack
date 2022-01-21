@@ -37,13 +37,17 @@ public class LogInTask {
 	 * a slash  must be added as the last character
 	*/
 	
-	public LogInTask(String direction) {
+	public LogInTask() {
+		String direction = "LogBook.txt";
+		
 		if (loca.equals("")) {
 			this.direction = direction;
 		}
 		else {
 			this.direction = loca + direction;
 		}
+		
+		this.direction = direction;
 	}
 	
 	public void setPlayerNowIndex (int index) {
@@ -52,7 +56,7 @@ public class LogInTask {
 	
 	public void openReadFile() {
 		try {
-			input = new Scanner(new File (direction));
+			input = new Scanner(new File ("LogBook.txt"));
 		}
 		
 		catch (FileNotFoundException fnfException) {
@@ -121,14 +125,21 @@ public class LogInTask {
 
 	public void readAllRecords() {
 		int index = 0;
+		String[] tempo;
 		try { 
 			while(input.hasNextLine() && index < totalRecords) {
+				tempo = input.nextLine().split("@");
+				for (int j = 0; j < allRecords[index].length; j++) {
+					allRecords[index][j] = tempo[j];
+				}
+				/*
 				allRecords[index][0] = Integer.toString(input.nextInt());
 				allRecords[index][1] = input.next();
 				allRecords[index][2] = Integer.toString(input.nextInt());
 				allRecords[index][3] = Integer.toString(input.nextInt());
 				allRecords[index][4] = Integer.toString(input.nextInt());
 				allRecords[index][5] = Integer.toString(input.nextInt());
+				*/
 				index++;
 			}
 			/*
@@ -159,7 +170,7 @@ public class LogInTask {
 	public void writeAllRecords(String[][] allRecords) {
 		for (int j = 0; j < allRecords.length; j++) {
 			try { 
-				frmtr.format("%s %s %s %s %s %s\n", 
+				frmtr.format("%s@%s@%s@%s@%s@%s\n", 
 						allRecords[j][0], allRecords[j][1],
 						allRecords[j][2], allRecords[j][3],
 						allRecords[j][4], allRecords[j][5]);
