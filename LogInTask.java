@@ -232,10 +232,28 @@ public class LogInTask {
     		frmtr.close();
     	}
     }
+	
+    public void openBackupFile() {
+    	try {
+			frmtr = new Formatter("backup.txt");
+		}
+		
+		catch (SecurityException sException) {
+			System.err.println("You do not have write access to this file.");
+			System.exit(1);
+		}
+		
+		catch (FileNotFoundException fnfException) {
+			System.err.println("Error opening or creating file.");
+			System.exit(1);
+		}
+    }
 }
 
+
 /* methods:
- * void openFile()
+ * void openReadFile()
+ * void openWriteFile()
  * void readTotalRecords()
  * void getTotalRecords()
  * void getAllRecords()
@@ -243,5 +261,7 @@ public class LogInTask {
  * void readAllRecords()
  * void selectRecord()
  * void updateRecord()
- * void closeFile()
+ * void closeReadFile()
+ * void closeWriteFile()
+ * void openBackupFile()
  */
