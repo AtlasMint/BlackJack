@@ -72,8 +72,6 @@ public class RunThis {
 	}//createAndShowUI()
 	
 	public static void main(String[] args) {
-		
-		
 		//GUI runs here
 		createAndShowUI();
 		//BlackJack will in Panels
@@ -119,16 +117,58 @@ public class RunThis {
 	
 	class WelcomePanel {
 		private JPanel mainPanel = new JPanel();
+		private JLabel mainTitle = new JLabel("BlackJack");
+		private JLabel boredTxt = new JLabel();
 		private JButton startButt = new JButton("Start");
 		private JButton exitButt = new JButton("Exit");
 		
+		private JButton c1 = new JButton();
+		private JButton c2 = new JButton();
+		private JButton c3 = new JButton();
+		private JButton c4 = new JButton();
+		private JButton c5 = new JButton();
+		
 		public WelcomePanel() {
-			//yeah I dont think needed this
 			//mainPanel.setLayout(new GridLayout(1,3));
+			mainPanel.setLayout(null);
+			//Title
+			mainTitle.setFont(new Font("Times New Roman", Font.PLAIN, 90));
+			mainTitle.setHorizontalAlignment(JLabel.CENTER);
+			mainTitle.setBackground(Color.WHITE);
+			mainTitle.setOpaque(true);
+			mainTitle.setBorder(new LineBorder(new Color(0x474747), 3));
+			mainPanel.add(mainTitle);
 			
+			//Decorative cards
+			showRandomCardIcons();
+			RandomCardIconButtHandler randomCardIconButtHandler = new RandomCardIconButtHandler();
+			c1.addActionListener(randomCardIconButtHandler);
+			c2.addActionListener(randomCardIconButtHandler);
+			c3.addActionListener(randomCardIconButtHandler);
+			c4.addActionListener(randomCardIconButtHandler);
+			c5.addActionListener(randomCardIconButtHandler);
+			c1.setRolloverEnabled(false);
+			c2.setRolloverEnabled(false);
+			c3.setRolloverEnabled(false);
+			c4.setRolloverEnabled(false);
+			c5.setRolloverEnabled(false);
+			mainPanel.add(c1);
+			mainPanel.add(c2);
+			mainPanel.add(c3);
+			mainPanel.add(c4);
+			mainPanel.add(c5);
+			
+			boredTxt.setForeground(Color.WHITE);
+			mainPanel.add(boredTxt);
+			
+			startButt.setUI(new StyledButtonUI());
+			exitButt.setUI(new StyledButtonUI());
 			mainPanel.add(startButt);
 			mainPanel.add(exitButt);
 			
+			mainPanel.setBackground(new Color(0x0f8b52));
+			mainPanel.setBorder(new LineBorder(new Color(0xb45f06), 10));
+
 			exitButt.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -136,7 +176,61 @@ public class RunThis {
 					wndw.dispose();
 				}
 			});
+			
+			frame.addComponentListener(new ComponentListener() {
+				//implementing stuff so doesn't break
+		    	public void componentHidden(ComponentEvent e) {}
+		        public void componentMoved(ComponentEvent e) {}
+		        public void componentShown(ComponentEvent e) {}
+		        //this the stuff
+		        public void componentResized(ComponentEvent e) {
+		        	width = e.getComponent().getBounds().getWidth();
+		        	height = e.getComponent().getBounds().getHeight();
+		        	
+		        	x = (int)width; y = (int)height;
+		        	mainTitle.setBounds(x/8, y/15, x*6/8, y*1/4);
+		        	
+		        	x = (int)(width-100)/2; y = (int)(height-145)/2;
+		        	c1.setBounds(x - 220, y, 100, 145);
+		        	c2.setBounds(x - 110, y, 100, 145);
+		        	c3.setBounds(x, y, 100, 145);
+		        	c4.setBounds(x + 110, y, 100, 145);
+		        	c5.setBounds(x + 220, y, 100, 145);
+		        	
+		        	x = (int)(width-200)/2; y = (int)(height+200)/2;
+		        	boredTxt.setBounds(x, y, 200, 30);
+		        	
+		        	x = (int)(width-100)/2; y = (int)(height)*3/4;
+		        	startButt.setBounds(x - 200, y, 200, 60);
+		        	exitButt.setBounds(x + 100, y, 200, 60);
+		        }
+			});
 		} //WelcomePanel()
+		
+		public void showRandomCardIcons() {
+			ImageIcon[] randomCardIcons = cardIcons.getRandomCardIcons();
+			//for (int j = 0; j < decoCards.length; j++) {
+				//decoCards[j] = new JLabel(randomCardIcons[j]);
+			//}
+			c1.setIcon(randomCardIcons[0]);
+			c2.setIcon(randomCardIcons[1]);
+			c3.setIcon(randomCardIcons[2]);
+			c4.setIcon(randomCardIcons[3]);
+			c5.setIcon(randomCardIcons[4]);
+		}
+		
+		private class RandomCardIconButtHandler implements ActionListener {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				((AbstractButton) e.getSource()).setIcon(cardIcons.getRandomCardIcon());
+				//set if you want same card when pressed
+				//((AbstractButton) e.getSource()).setIcon(cardIcons.getCardIcon("Diamond A"));
+				
+				if (c1.getIcon() == c2.getIcon() && c2.getIcon() == c3.getIcon() && c3.getIcon() == c4.getIcon() && c4.getIcon() == c5.getIcon()) {
+					boredTxt.setText("Damn. You're that bored huh?");
+				}
+			}
+		} //RandomCardIconButtHandler()
 		
 		public void addStartButtActionListener(ActionListener listener) {
 			startButt.addActionListener(listener);
@@ -157,6 +251,7 @@ public class RunThis {
 		private JButton enter = new JButton("Play");
 		private JButton newPlayerButt;
 		private DefaultTableModel tableModel;
+		private JScrollPane scrollPane;
 		private JTable profileTable;
 		
 		private String[] colLabels = {"No.", "Username", "Total games", "Total wins", "Total losses", "Total draws"};
@@ -171,12 +266,13 @@ public class RunThis {
 			 *  should alr check in with the
 			 *  player's profile
 			 */
+
 			//buttons here
 			newPlayerButt = new JButton("New profile");
 			playButt.setEnabled(false);
 			
 			//readerThread runs here
-			logInTask = new LogInTask("LogBook.txt");
+			logInTask = new LogInTask();
 			logInTask.openReadFile();
 			logInTask.readTotalRecords();
 			logInTask.createAllRecords();
@@ -193,9 +289,18 @@ public class RunThis {
 				}
 			};
 			profileTable = new JTable(tableModel);
-			profileTable.setPreferredScrollableViewportSize(new Dimension(500, 100));
+			//profileTable.setPreferredScrollableViewportSize(new Dimension(500, 100));
 	        profileTable.setFillsViewportHeight(true);
 			profileTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			profileTable.setFocusable(false);
+			profileTable.setIntercellSpacing(new Dimension(0,0));
+			profileTable.setRowHeight(25);
+			profileTable.setSelectionBackground(new Color(0xA7A7A7));
+			profileTable.setShowVerticalLines(false);
+			profileTable.getTableHeader().setFont(new Font("Dialog", Font.BOLD, 18));
+			profileTable.getTableHeader().setOpaque(false);
+			profileTable.getTableHeader().setBackground(Color.WHITE);
+			
 			
 	        if (allowRowSel) {
 	        	ListSelectionModel rowSM = profileTable.getSelectionModel();
@@ -221,8 +326,15 @@ public class RunThis {
 	        }
 			//LogInTask loginTask = new LogInTask();
 			//PlayerNow playerNow = new PlayerNow();
-			
-			mainPanel.add(new JScrollPane(profileTable));
+			playButt.setUI(new StyledButtonUI());
+			newPlayerButt.setUI(new StyledButtonUI());
+			backButt.setUI(new StyledButtonUI());
+	        
+			profileTable.setFont(new Font("Dialog", Font.PLAIN, 15));
+			//profileTable.getColumnModel().getColumn(0).setWidth(10);
+			scrollPane = new JScrollPane(profileTable);
+			mainPanel.setLayout(null);
+			mainPanel.add(scrollPane);
 			mainPanel.add(playButt);
 			mainPanel.add(newPlayerButt);
 			mainPanel.add(backButt);
@@ -247,22 +359,38 @@ public class RunThis {
 				}
 			}); //playButt action listener
 			
-			//new profile
+			//new profile and stuff
 			JFrame popupFrame = new JFrame("New profile");
+			JPanel popupPanel = new JPanel(null);
+			JLabel askingLabel = new JLabel("Enter a username");
+			JTextField newUsername = new JTextField();
 			
 			newPlayerButt.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (!popupFrame.isVisible()) {
-						JPanel popupPanel = new JPanel(new GridLayout(3,0));
-						JLabel askingLabel = new JLabel("Enter a username");
-						JTextField newUsername = new JTextField();
+						//askingLabel.setBackground(Color.BLUE);
+						//askingLabel.setOpaque(true);
+						askingLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+						askingLabel.setHorizontalAlignment(JLabel.CENTER);
+						newUsername.setText("Your name");
+						newUsername.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+						newUsername.setHorizontalAlignment(JLabel.CENTER);
+						enter.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.WHITE, Color.GRAY));
+						enter.setBackground(Color.WHITE);
+						
+						askingLabel.setBounds(100,50,200,50);
+						newUsername.setBounds(100,100,200,50);
+						enter.setBounds(100,150,200,50);
+						
+						popupFrame.setSize(400, 300);
+						popupPanel.setBackground(new Color(0x0f8b52));
 						popupPanel.add(askingLabel);
 						popupPanel.add(newUsername);
 						popupPanel.add(enter);
 						popupFrame.add(popupPanel);
 						popupFrame.setLocationRelativeTo(null);
-						popupFrame.setSize(400,300);
+						popupFrame.setResizable(false);
 						popupFrame.setVisible(true);
 						
 						enter.addActionListener(new ActionListener() {
@@ -301,16 +429,42 @@ public class RunThis {
 											Integer.toString(allRecords.length),
 											newUsername.getText(),
 											"0", "0", "0", "0"};
+									/*
 									Window wndw = SwingUtilities.getWindowAncestor(popupPanel);
 									wndw.dispose();
-									
+									*/
+									popupFrame.dispose();
 								}
 							}
-						});
+						}); //enter action listener
 					}
 				}
 			}); //new profile action listener
+
+			mainPanel.setBackground(new Color(0x03396c));
 			
+			frame.addComponentListener(new ComponentListener() {
+				//implementing stuff so doesn't break
+		    	public void componentHidden(ComponentEvent e) {}
+		        public void componentMoved(ComponentEvent e) {}
+		        public void componentShown(ComponentEvent e) {}
+		        //this the stuff
+		        public void componentResized(ComponentEvent e) {
+		        	width = e.getComponent().getBounds().getWidth();
+		        	height = e.getComponent().getBounds().getHeight();
+		        	
+		        	x = (int) width; y = (int)height;
+		        	scrollPane.setBounds((x/2)-400, y/14, 800, y*5/7);
+		        	
+		        	x = (int) width/2; y = (int)height*6/7;
+		        	
+		        	//footnote: 250/450 = 5/18
+		        	backButt.setBounds(x*5/9, y, 100, 30);
+		        	newPlayerButt.setBounds(x*8/9, y, 100, 30);
+		        	playButt.setBounds(x*11/9, y, 100, 30);
+		        	//System.out.printf("%d %d %d %d", x, x*5/9, x*8/9, x*11/9);
+		        }
+			});
 		} //LogInPanel()
 		
 		@SuppressWarnings("serial")
