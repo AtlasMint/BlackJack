@@ -563,9 +563,8 @@ public class RunThis {
 			        }
 			    }
 			}	
-			
 			return deck;
-		}
+		} //makeStandardDeck()
 		
 		private String[] shuffle(String[] deck){
 		    for (int i = 0; i < deck.length; i++) {
@@ -574,9 +573,8 @@ public class RunThis {
 			   deck[i] = deck[index];
 			   deck[index] = temp;
 		    }
-		    
 		    return deck;
-		}
+		} //shuffle()
 		
 		private String[] minusDeck(String[] deck) {
 			String[] tempo = new String[remainingCards];
@@ -586,7 +584,7 @@ public class RunThis {
 			}
 			
 			return tempo;
-		}
+		} //minusDeck()
 		
 		private String value(String[] cards) {
 			String value = "0";
@@ -697,7 +695,7 @@ public class RunThis {
 				}
 			}
 			return value;
-		}
+		} //value()
 		
 		private String[] addHand(String[] hand, String card) {
 			String[] tempo = hand;
@@ -710,7 +708,7 @@ public class RunThis {
 			hand[tempo.length] = card;
 			
 			return hand;
-		}
+		} //addHand()
 		
 		public PlayPanel() {
 			hitButt = new JButton("Hit");
@@ -725,6 +723,17 @@ public class RunThis {
 				dealerCards[i].setPreferredSize(new Dimension(100,145));
 				playerCards[i].setPreferredSize(new Dimension(100,145));
 			}
+
+			//Title
+        	bigLabel.setHorizontalAlignment(JLabel.CENTER);
+        	bigLabel.setBackground(Color.WHITE);
+        	bigLabel.setOpaque(true);
+        	bigLabel.setBorder(new LineBorder(new Color(0x474747), 3));
+
+			hitButt.setUI(new StyledButtonUI());
+			standButt.setUI(new StyledButtonUI());
+			quitButt.setUI(new StyledButtonUI());
+			
 			//adding shit
 			mainPanel.add(bigLabel);
 			mainPanel.add(d1);	mainPanel.add(d2);
@@ -736,21 +745,71 @@ public class RunThis {
 		    mainPanel.add(standButt);
 		    mainPanel.add(quitButt);
 		    
-		    bigLabel.setBounds(10,10,700,100);
-		    d1.setBounds(10,120,100,145);
-		    d2.setBounds(120,120,100,145);
-		    d3.setBounds(230,120,100,145);
-		    d4.setBounds(340,120,100,145);
-		    d5.setBounds(450,120,100,145);
-		    p5.setBounds(780,275,100,145);
-		    p4.setBounds(670,275,100,145);
-		    p3.setBounds(560,275,100,145);
-		    p2.setBounds(450,275,100,145);
-		    p1.setBounds(340,275,100,145);
-		    hitButt.setBounds(10,430,250,30);
-		    standButt.setBounds(270,430,250,30);
-		    quitButt.setBounds(530,430,250,30);
+			mainPanel.setBackground(new Color(0x0f8b52));
+			mainPanel.setBorder(new LineBorder(new Color(0xb45f06), 10));
+			
+			frame.addComponentListener(new ComponentListener() {
+				//implementing stuff so doesn't break
+		    	public void componentHidden(ComponentEvent e) {}
+		        public void componentMoved(ComponentEvent e) {}
+		        public void componentShown(ComponentEvent e) {}
+		        //this the stuff
+		        public void componentResized(ComponentEvent e) {
+		        	width = e.getComponent().getBounds().getWidth();
+		        	height = e.getComponent().getBounds().getHeight();
+		        	
+		        	x = (int)width; y = (int)height;
+		        	bigLabel.setBounds(x/8, y/15, x*3/4, y*1/5);
+		        	
+		        	x = (int)(width-100)/2; y = (int)(height-210)/2;
+		        	d1.setBounds(x - 330, y, 100, 145);
+		        	d2.setBounds(x - 220, y, 100, 145);
+		        	d3.setBounds(x - 110, y, 100, 145);
+		        	d4.setBounds(x, y, 100, 145);
+		        	d5.setBounds(x + 110, y, 100, 145);
 
+		        	y = (int) height*4/7;
+		        	p1.setBounds(x - 110, y, 100, 145);
+		        	p2.setBounds(x, y, 100, 145);
+		        	p3.setBounds(x + 110, y, 100, 145);
+		        	p4.setBounds(x + 220, y, 100, 145);
+		        	p5.setBounds(x + 330, y, 100, 145);
+		        	
+		        	x = (int) width/2; y = (int)height-125;
+		        	hitButt.setBounds(x-350, y, 200, 50);
+		        	standButt.setBounds(x-100, y, 200, 50);
+		        	quitButt.setBounds(x+150, y, 200, 50);
+		        	
+		        	
+		        	
+/*
+				    bigLabel.setBounds(10,10,700,100);
+				    d1.setBounds(10,120,100,145);
+				    d2.setBounds(120,120,100,145);
+				    d3.setBounds(230,120,100,145);
+				    d4.setBounds(340,120,100,145);
+				    d5.setBounds(450,120,100,145);
+				    p5.setBounds(780,275,100,145);
+				    p4.setBounds(670,275,100,145);
+				    p3.setBounds(560,275,100,145);
+				    p2.setBounds(450,275,100,145);
+				    p1.setBounds(340,275,100,145);
+				    hitButt.setBounds(10,430,250,30);
+				    standButt.setBounds(270,430,250,30);
+				    quitButt.setBounds(530,430,250,30);
+*/
+		        	
+		        	
+		        	
+		        	
+		        	
+		        	
+		        	
+		        	
+		        	
+		        	
+		        }
+			});
 		} //PlayPanel()
 		
 		private class HitButtActionListener implements ActionListener {
@@ -799,7 +858,7 @@ public class RunThis {
 			//here lies the start of BlackJack
 		    // dealing cards, etc.
 			bigLabel.setText("BlackJack");
-			bigLabel.setFont(new Font("Dialog", Font.PLAIN, 30));
+        	bigLabel.setFont(new Font("Times New Roman", Font.PLAIN, 40));
 
 			if (hitButt.getText().equals("Play again") && standButt.getText().equals("Change player")) {
 				hitButt.setText("Hit");
@@ -934,7 +993,7 @@ public class RunThis {
 				//playerNow.setLosts(playerNow.getLosts() + 1);
 				allRecords[selIndex][4] = Integer.toString(
 						Integer.parseInt(allRecords[selIndex][4]) + 1);
-				bigLabel.setText(le.getMessage() + " you lost...");
+				bigLabel.setText(le.getMessage() + " You lost...");
 			}
 			catch (DrawException de) {
 				//playerNow.setDraws(playerNow.getDraws() + 1);
@@ -944,7 +1003,7 @@ public class RunThis {
 			}
 			finally {
 				if (gameOver) {
-					bigLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
+					bigLabel.setFont(new Font("Dialog", Font.PLAIN, 30));
 					
 					for (int i = 0; i < dealerHands.length; i++) {
 						//dealerCards[i] indicates d[i] - JLabel
@@ -967,10 +1026,12 @@ public class RunThis {
 					logInTask.openWriteFile();
 					logInTask.writeAllRecords(allRecords);
 					logInTask.closeWriteFile();
+					logInTask.openBackupFile();
+					logInTask.writeAllRecords(allRecords);
+					logInTask.closeWriteFile();
 					//printAllRecords();//printPlayerHands();//printDealerHands();
 				} //else { }
 			}//t-c-f block
-			
 		} //decideGameOver()
 		
 		public void decideResult() throws WinException, LoseException, DrawException {
