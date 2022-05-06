@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -18,6 +20,11 @@ import javax.swing.table.DefaultTableModel;
 //===================================================================================
 
 public class RunThis {
+	public static JFrame frame;
+	public double width;
+	public double height;
+	public int x;
+	public int y;
 	private static final String Welcome = "Welcome";
 	private static final String LogIn = "log in";
 	private static final String Game = "game";
@@ -60,27 +67,51 @@ public class RunThis {
 	
 	private static void createAndShowUI() {
 		cardIcons = new CardIcons();
-		JFrame frame = new JFrame("Black Jack");
+		frame = new JFrame("Black Jack");
 		frame.setIconImage(cardIcons.getCardBack().getImage());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    frame.getContentPane().add(new RunThis().getMainPanel());
-		frame.setSize(900,700); //size of frame is 900 x 700
-		frame.setResizable(false);
+		frame.setSize(900,700); //initial size of frame is 900 x 700
+		frame.setResizable(true);
 	    //frame.pack();
 	    frame.setLocationRelativeTo(null);
 	    frame.setVisible(true);
+	    //"width %d height %d",
+
 	}//createAndShowUI()
 	
 	public static void main(String[] args) {
+		//pee pee poo poo
+		
 		//GUI runs here
 		createAndShowUI();
 		//BlackJack will in Panels
 	}//main(string[] args)
 	
+	/*
+	private class ResizeListener implements ComponentListener {
+		//implementing stuff so doesn't break
+    	public void componentHidden(ComponentEvent e) {}
+        public void componentMoved(ComponentEvent e) {}
+        public void componentShown(ComponentEvent e) {}
+        //this the stuff
+        public void componentResized(ComponentEvent e) {
+        	currSize = e.getComponent().getBounds().getSize(); //use this to set bounds
+        	//System.out.println(currSize);
+        	if (currSize.getWidth() < 900 || currSize.getHeight() < 700) {
+        		frame.setSize(900,700);
+        		frame.getContentPane().repaint();
+        		frame.setLocationRelativeTo(null);
+        	}
+        	
+        }
+	}
+	*/
 	private class SwitchLayoutButtHandler implements ActionListener {
 		public void actionPerformed (ActionEvent event) {
 			
 			if (event.getActionCommand().equals("Quit") || event.getActionCommand().equals("Back") || event.getActionCommand().equals("Exit to Main Menu")) {
+				welcomePanel.showRandomCardIcons();
 				cardLayout.show(mainPanel, Welcome);
 			}
 			
@@ -116,11 +147,14 @@ public class RunThis {
 	//=============================================================================
 	
 	class WelcomePanel {
+		private boolean yesDavid = false;
 		private JPanel mainPanel = new JPanel();
+		private JLabel bgimg = new JLabel();
 		private JLabel mainTitle = new JLabel("BlackJack");
 		private JLabel boredTxt = new JLabel();
 		private JButton startButt = new JButton("Start");
 		private JButton exitButt = new JButton("Exit");
+		private JButton chgbg = new JButton("David");
 		
 		private JButton c1 = new JButton();
 		private JButton c2 = new JButton();
@@ -131,13 +165,15 @@ public class RunThis {
 		public WelcomePanel() {
 			//mainPanel.setLayout(new GridLayout(1,3));
 			mainPanel.setLayout(null);
+			mainPanel.add(bgimg);
+			
 			//Title
 			mainTitle.setFont(new Font("Times New Roman", Font.PLAIN, 90));
 			mainTitle.setHorizontalAlignment(JLabel.CENTER);
 			mainTitle.setBackground(Color.WHITE);
 			mainTitle.setOpaque(true);
 			mainTitle.setBorder(new LineBorder(new Color(0x474747), 3));
-			mainPanel.add(mainTitle);
+			bgimg.add(mainTitle);
 			
 			//Decorative cards
 			showRandomCardIcons();
@@ -152,28 +188,36 @@ public class RunThis {
 			c3.setRolloverEnabled(false);
 			c4.setRolloverEnabled(false);
 			c5.setRolloverEnabled(false);
-			mainPanel.add(c1);
-			mainPanel.add(c2);
-			mainPanel.add(c3);
-			mainPanel.add(c4);
-			mainPanel.add(c5);
+			bgimg.add(c1);
+			bgimg.add(c2);
+			bgimg.add(c3);
+			bgimg.add(c4);
+			bgimg.add(c5);
 			
 			boredTxt.setForeground(Color.WHITE);
-			mainPanel.add(boredTxt);
+			bgimg.add(boredTxt);
 			
 			startButt.setUI(new StyledButtonUI());
 			exitButt.setUI(new StyledButtonUI());
-			mainPanel.add(startButt);
-			mainPanel.add(exitButt);
-			
-			mainPanel.setBackground(new Color(0x0f8b52));
-			mainPanel.setBorder(new LineBorder(new Color(0xb45f06), 10));
+			chgbg.setUI(new StyledButtonUI());
+			bgimg.add(startButt);
+			bgimg.add(exitButt);
+			bgimg.add(chgbg);
+			//bgimg.setBorder(new LineBorder(new Color(0xb45f06), 10));
 
 			exitButt.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					Window wndw = SwingUtilities.getWindowAncestor(mainPanel);
 					wndw.dispose();
+				}
+			});
+			
+			chgbg.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					bgimg.setIcon(new ImageIcon(cardIcons.scaleImage(cardIcons.getDavid().getImage(), (int)width, (int)height)));
+					yesDavid = true;
 				}
 			});
 			
@@ -186,6 +230,14 @@ public class RunThis {
 		        public void componentResized(ComponentEvent e) {
 		        	width = e.getComponent().getBounds().getWidth();
 		        	height = e.getComponent().getBounds().getHeight();
+
+					//Background
+					if (yesDavid) {
+						bgimg.setIcon(new ImageIcon(cardIcons.scaleImage(cardIcons.getDavid().getImage(), (int)width, (int)height)));
+					} else {
+						bgimg.setIcon(new ImageIcon(cardIcons.scaleImage(cardIcons.getPkrft().getImage(), (int)width, (int)height)));
+					}
+					bgimg.setBounds(0,0, (int)width, (int)height);
 		        	
 		        	x = (int)width; y = (int)height;
 		        	mainTitle.setBounds(x/8, y/15, x*6/8, y*1/4);
@@ -196,13 +248,15 @@ public class RunThis {
 		        	c3.setBounds(x, y, 100, 145);
 		        	c4.setBounds(x + 110, y, 100, 145);
 		        	c5.setBounds(x + 220, y, 100, 145);
+
+		        	y = (int)(height)*3/4;
+		        	startButt.setBounds(x - 200, y, 200, 60);
+		        	exitButt.setBounds(x + 100, y, 200, 60);
 		        	
 		        	x = (int)(width-200)/2; y = (int)(height+200)/2;
 		        	boredTxt.setBounds(x, y, 200, 30);
 		        	
-		        	x = (int)(width-100)/2; y = (int)(height)*3/4;
-		        	startButt.setBounds(x - 200, y, 200, 60);
-		        	exitButt.setBounds(x + 100, y, 200, 60);
+		        	chgbg.setBounds((int)(width-100), (int)(height-70), 70, 25);
 		        }
 			});
 		} //WelcomePanel()
@@ -245,6 +299,7 @@ public class RunThis {
 
 	class LogInPanel {
 		private JPanel mainPanel = new JPanel();
+		private JLabel bgimg = new JLabel();
 		private JLabel mainLabel = new JLabel("Please select a profile");
 		private JButton playButt = new JButton("Play");;
 		private JButton backButt = new JButton("Back");;
@@ -297,10 +352,10 @@ public class RunThis {
 			profileTable.setRowHeight(25);
 			profileTable.setSelectionBackground(new Color(0xA7A7A7));
 			profileTable.setShowVerticalLines(false);
-			profileTable.getTableHeader().setFont(new Font("Dialog", Font.BOLD, 18));
+			profileTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 18));
 			profileTable.getTableHeader().setOpaque(false);
 			profileTable.getTableHeader().setBackground(Color.WHITE);
-			
+			profileTable.getTableHeader().setReorderingAllowed(false);
 			
 	        if (allowRowSel) {
 	        	ListSelectionModel rowSM = profileTable.getSelectionModel();
@@ -334,10 +389,11 @@ public class RunThis {
 			//profileTable.getColumnModel().getColumn(0).setWidth(10);
 			scrollPane = new JScrollPane(profileTable);
 			mainPanel.setLayout(null);
-			mainPanel.add(scrollPane);
-			mainPanel.add(playButt);
-			mainPanel.add(newPlayerButt);
-			mainPanel.add(backButt);
+			mainPanel.add(bgimg);
+			bgimg.add(scrollPane);
+			bgimg.add(playButt);
+			bgimg.add(newPlayerButt);
+			bgimg.add(backButt);
 			
 			playButt.addActionListener(new ActionListener() {
 				@Override
@@ -441,7 +497,7 @@ public class RunThis {
 				}
 			}); //new profile action listener
 
-			mainPanel.setBackground(new Color(0x03396c));
+			//mainPanel.setBackground(new Color(0x03396c));
 			
 			frame.addComponentListener(new ComponentListener() {
 				//implementing stuff so doesn't break
@@ -452,13 +508,17 @@ public class RunThis {
 		        public void componentResized(ComponentEvent e) {
 		        	width = e.getComponent().getBounds().getWidth();
 		        	height = e.getComponent().getBounds().getHeight();
+
+					//Background
+					bgimg.setIcon(new ImageIcon(cardIcons.scaleImage(cardIcons.getPkrbg().getImage(), (int)width, (int)height)));
+					bgimg.setBounds(0,0, (int)width, (int)height);
 		        	
 		        	x = (int) width; y = (int)height;
 		        	scrollPane.setBounds((x/2)-400, y/14, 800, y*5/7);
 		        	
 		        	x = (int) width/2; y = (int)height*6/7;
 		        	
-		        	//footnote: 250/450 = 5/18
+		        	//footnote:250/450 = 5/18
 		        	backButt.setBounds(x*5/9, y, 100, 30);
 		        	newPlayerButt.setBounds(x*8/9, y, 100, 30);
 		        	playButt.setBounds(x*11/9, y, 100, 30);
@@ -516,11 +576,12 @@ public class RunThis {
 
 	class PlayPanel {
 		private JPanel mainPanel = new JPanel();
+		private JLabel bgimg = new JLabel();
 		public String result;
 		public boolean gameOver;
 		
 		//private Font labelFont;
-		public JLabel bigLabel = new JLabel();;
+		public JLabel bigLabel = new JLabel();
 		private JLabel p1 = new JLabel();
 		private JLabel p2 = new JLabel();
 		private JLabel p3 = new JLabel();
@@ -735,19 +796,20 @@ public class RunThis {
 			quitButt.setUI(new StyledButtonUI());
 			
 			//adding shit
-			mainPanel.add(bigLabel);
-			mainPanel.add(d1);	mainPanel.add(d2);
-			mainPanel.add(d3);	mainPanel.add(d4);
-			mainPanel.add(d5);	mainPanel.add(p1);
-			mainPanel.add(p2);	mainPanel.add(p3);
-			mainPanel.add(p4);	mainPanel.add(p5);
-		    mainPanel.add(hitButt);
-		    mainPanel.add(standButt);
-		    mainPanel.add(quitButt);
-		    
+			bgimg.add(bigLabel);
+			bgimg.add(d1);	bgimg.add(d2);
+			bgimg.add(d3);	bgimg.add(d4);
+			bgimg.add(d5);	bgimg.add(p1);
+			bgimg.add(p2);	bgimg.add(p3);
+			bgimg.add(p4);	bgimg.add(p5);
+		    bgimg.add(hitButt);
+		    bgimg.add(standButt);
+		    bgimg.add(quitButt);
+		    mainPanel.add(bgimg);
+		    /*
 			mainPanel.setBackground(new Color(0x0f8b52));
 			mainPanel.setBorder(new LineBorder(new Color(0xb45f06), 10));
-			
+			*/
 			frame.addComponentListener(new ComponentListener() {
 				//implementing stuff so doesn't break
 		    	public void componentHidden(ComponentEvent e) {}
@@ -757,6 +819,10 @@ public class RunThis {
 		        public void componentResized(ComponentEvent e) {
 		        	width = e.getComponent().getBounds().getWidth();
 		        	height = e.getComponent().getBounds().getHeight();
+
+					//Background
+					bgimg.setIcon(new ImageIcon(cardIcons.scaleImage(cardIcons.getPkrft().getImage(), (int)width, (int)height)));
+					bgimg.setBounds(0,0, (int)width, (int)height);
 		        	
 		        	x = (int)width; y = (int)height;
 		        	bigLabel.setBounds(x/8, y/15, x*3/4, y*1/5);
@@ -1041,6 +1107,7 @@ public class RunThis {
 			 *  exceptions thrown here
 			 */
 			
+			//printAllOutcomes();
 			if (outcomeP.equals(outcomeD) && 
 					(outcomeP.equals("double A") || outcomeP.equals("BJ") || outcomeP.equals("5D") || outcomeP.equals("bust"))) {
 				gameOver = true;
@@ -1117,7 +1184,7 @@ public class RunThis {
 					System.out.println(allRecords[i][j]);
 				}
 			}
-		}
+		} //printAllRecords()
 		
 		public void printDealerHands() {
 			output_ = "\nDealer's hand: ";
@@ -1126,7 +1193,7 @@ public class RunThis {
 			}
 			output_ = output_ + dealerHands[dealerHands.length-1] + "\n";
 			System.out.println(output_);
-		}
+		} //printDealerHands()
 		
 		public void printPlayerHands() {
 			output_ = "\nYour hand: ";
@@ -1135,11 +1202,11 @@ public class RunThis {
 			}
 			output_ = output_ + playerHands[playerHands.length-1];
 			System.out.println(output_);
-		}
+		} //printPlayerHands()
 		
 		public void printAllOutcomes() {
 			System.out.printf("OutcomeD: %s\nOutcomeP: %s", outcomeD, outcomeP);
-		}
+		} //printAllOutcomes()
 		
 		public boolean isGameOver() {
 			return gameOver;
