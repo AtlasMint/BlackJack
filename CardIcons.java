@@ -1,8 +1,12 @@
 import java.awt.Image;
+import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 
 public class CardIcons {
+	public ImageIcon pkrbg;
+	public ImageIcon pkrft;
+	public ImageIcon david;
 	public ImageIcon cardBack;
 	public ImageIcon diamondA;
 	public ImageIcon clubA;
@@ -61,10 +65,15 @@ public class CardIcons {
 	ImageIcon[] clubs;
 	ImageIcon[] hearts;
 	ImageIcon[] spades;
+	ImageIcon[] deck = new ImageIcon[52];
 	
 	public CardIcons() {
-		String loca = "C:/Users/user/Desktop/Misc Disc/Standard card deck png/";
+		//your file location here
+		String loca = "";
 		
+		pkrbg = new ImageIcon(loca + "poker_table_login_background.jpg");
+		pkrft = new ImageIcon(loca + "playing_cards_background.jpg");
+		david = new ImageIcon(loca + "david-ktorza.jpg");
 		cardBack = new ImageIcon(loca + "1_card_back.png");
 		diamondA = new ImageIcon(loca + "ace_of_diamonds.png");
 		clubA = new ImageIcon(loca + "ace_of_clubs.png");
@@ -141,7 +150,26 @@ public class CardIcons {
 		scaleDownIcons(clubs);
 		scaleDownIcons(hearts);
 		scaleDownIcons(spades);
-			
+
+		//every array length is 13
+		for (int j = 0; j < diamonds.length; j++) {
+			deck[j] = diamonds[j];
+		}
+		for (int j = 0; j < clubs.length; j++) {
+			deck[j + 13] = clubs[j];
+		}
+		for (int j = 0; j < hearts.length; j++) {
+			deck[j + 26] = hearts[j];
+		}
+		for (int j = 0; j < spades.length; j++) {
+			deck[j + 39] = spades[j];
+		}
+		/*
+		System.arraycopy(diamonds, 0, deck, 0, 13);
+		System.arraycopy(clubs, 0, deck, 13, 26);
+		System.arraycopy(hearts, 0, deck, 26, 39);
+		System.arraycopy(spades, 0, deck, 39, 52);
+		*/
 	}
 	
 	public ImageIcon getCardIcon(String card) {
@@ -191,18 +219,58 @@ public class CardIcons {
 			icons[i] = new ImageIcon(icons[i].getImage().getScaledInstance(100, 145, Image.SCALE_SMOOTH));
 		}
 	}
-	/*
-    private Image scaleImage(Image image, int w, int h) {
-
-        Image scaled = image.getScaledInstance(w, h, Image.SCALE_SMOOTH);
-        return scaled;
+	
+    public Image scaleImage(Image image, int w, int h) {
+        return image.getScaledInstance(w, h, Image.SCALE_SMOOTH);
     }
-	*/
+	
+	public ImageIcon[] getRandomCardIcons() {
+		ImageIcon[] tempo = new ImageIcon[5];
+		for (int i = 0; i < tempo.length; i++) {
+			int index = (int)(Math.random()*deck.length);
+			tempo[i] = deck[index];
+		}
+		
+		return tempo;
+	}
+	
+	public ImageIcon getRandomCardIcon() {
+		int index = (int)(Math.random()*deck.length);
+		return deck[index];
+	}
+	
 	public ImageIcon getCardBack() {
 		return cardBack;
+	}
+	
+	public ImageIcon getDavid() {
+		return david;
+	}
+	
+	public ImageIcon getPkrft() {
+		return pkrft;
+	}
+	
+	public ImageIcon getPkrbg() {
+		return pkrbg;
 	}
 	
 	public ImageIcon[] getTestIcons() {
 		return hearts;
 	}
 }
+
+/* methods:
+ * public CardIcons()
+ * public ImageIcon getCardIcon(String )
+ * public ImageIcon subFinder(String , ImageIcon[] )
+ * private void scaleDownIcons(ImageIcon[] )
+ * public Image scaleImage(Image , int , int)
+ * public ImageIcon[] getRandomCardIcons()
+ * public ImageIcon getRandomCardIcon()
+ * public ImageIcon getCardBack()
+ * public ImageIcon getDavid()
+ * public ImageIcon getPkrft()
+ * public ImageIcon getPkrbg()
+ * public ImageIcon[] getTestIcons()
+ */
