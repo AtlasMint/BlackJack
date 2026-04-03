@@ -1,0 +1,30 @@
+# Compiled classes
+*.class
+
+# Maven build output
+target/
+
+# JAR files
+*.jar
+
+# IDE files
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.project
+.classpath
+.settings/
+
+# Node version manager
+nodevenv/
+
+# Logs
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+.scannerwork
